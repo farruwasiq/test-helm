@@ -61,6 +61,7 @@ jobs:
 
       - name: ⬇️ Manual Helm Installation (Script with Specified Stable Version)
         run: |
+          set -e
           # Define a known, stable version that is likely to be available.
           # v3.19.0 is the major stable release before v3.19.1.
           HELM_VERSION="v3.19.0"
