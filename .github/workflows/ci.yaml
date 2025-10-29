@@ -16,17 +16,17 @@ jobs:
       - name: ⬇️ Checkout code
         uses: actions/checkout@v4
 
-      # - name: ⚙️ Setup Helm with Input Version
-      #   uses: azure/setup-helm@v4
+      - name: ⚙️ Setup Helm with Input Version
+        uses: azure/setup-helm@v4
       #   # with:
       #   #   # Use the version provided in the manual trigger form, 
       #   #   # otherwise fall back to the default 'latest'
       #   #   version: ${{ github.event.inputs.helm_version }}
 
-      # - name: ✅ Verify Helm Installation
-      #   run: |
-      #     echo "Successfully installed Helm version:"
-      #     helm version --short
+      - name: ✅ Verify Helm Installation
+        run: |
+          echo "Successfully installed Helm version:"
+          helm version --short
 
 
       # - name: ⬇️ Manual Helm Installation (using Installer Script)
@@ -59,21 +59,21 @@ jobs:
       #     # 6. Verify the installation
       #     helm version --client
 
-      - name: ⬇️ Manual Helm Installation (Script with Specified Stable Version)
-        run: |
-          set -e
-          # Define a known, stable version that is likely to be available.
-          # v3.19.0 is the major stable release before v3.19.1.
-          HELM_VERSION="v3.19.0"
+      # - name: ⬇️ Manual Helm Installation (Script with Specified Stable Version)
+      #   run: |
+      #     set -e
+      #     # Define a known, stable version that is likely to be available.
+      #     # v3.19.0 is the major stable release before v3.19.1.
+      #     HELM_VERSION="v3.19.0"
           
-          echo "Attempting to install Helm ${HELM_VERSION} using the official script."
+      #     echo "Attempting to install Helm ${HELM_VERSION} using the official script."
           
-          # Download the installer script
-          curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+      #     # Download the installer script
+      #     curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
           
-          # Run the script with the --version flag to enforce a known stable release
-          chmod 700 get_helm.sh
-          ./get_helm.sh --version "${HELM_VERSION}"
+      #     # Run the script with the --version flag to enforce a known stable release
+      #     chmod 700 get_helm.sh
+      #     ./get_helm.sh --version "${HELM_VERSION}"
           
-          # Verify the installation
-          helm version --client
+      #     # Verify the installation
+      #     helm version --client
