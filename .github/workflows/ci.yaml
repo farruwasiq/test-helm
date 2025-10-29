@@ -16,14 +16,41 @@ jobs:
       - name: ⬇️ Checkout code
         uses: actions/checkout@v4
 
-      - name: ⚙️ Setup Helm with Input Version
-        uses: azure/setup-helm@v4
-        # with:
-        #   # Use the version provided in the manual trigger form, 
-        #   # otherwise fall back to the default 'latest'
-        #   version: ${{ github.event.inputs.helm_version }}
+      # - name: ⚙️ Setup Helm with Input Version
+      #   uses: azure/setup-helm@v4
+      #   # with:
+      #   #   # Use the version provided in the manual trigger form, 
+      #   #   # otherwise fall back to the default 'latest'
+      #   #   version: ${{ github.event.inputs.helm_version }}
 
-      - name: ✅ Verify Helm Installation
+      # - name: ✅ Verify Helm Installation
+      #   run: |
+      #     echo "Successfully installed Helm version:"
+      #     helm version --short
+
+      
+      - name: ⬇️ Manual Helm Installation
         run: |
-          echo "Successfully installed Helm version:"
-          helm version --short
+          # 1. Define the desired version and download URL
+          HELM_VERSION="v3.14.4"
+          HELM_TAR="helm-${HELM_VERSION}-linux-amd64.tar.gz"
+          
+          # The download URL base is the one you specified, but we'll try the common Helm Releases page first if possible
+          DOWNLOAD_URL="https://get.helm.sh/${HELM_TAR}"
+          
+          echo "Downloading Helm ${HELM_VERSION} from ${DOWNLOAD_URL}"
+          
+          # 2. Download the binary package using curl
+          # -L follows redirects, -o specifies the output file
+          curl -sSL "${DOWNLOAD_URL}" -o "${HELM_TAR}"
+          
+          # 3. Unpack the package
+          # -z (gzip), -x (extract), -v (verbose), -f (file)
+          tar -zxvf "${HELM_TAR}"
+          
+          # 4. Move the binary to a directory that is on the runner's PATH
+          # The extracted directory structure is typically 'linux-amd64/helm'
+          sudo mv linux-amd64/helm /usr/local/bin/helm
+          
+          # 5. Verify the installation
+          helm version --client
