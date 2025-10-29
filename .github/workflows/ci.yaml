@@ -34,27 +34,45 @@ jobs:
       #     # This downloads and runs the official get-helm-3 script, which finds the latest version
       #     curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
       #     helm version --client
-      - name: ⬇️ Manual Helm Installation (Direct GitHub Artifact)
+      # - name: ⬇️ Manual Helm Installation (Direct GitHub Artifact)
+      #   run: |
+      #     # 1. Define the desired version (Latest stable)
+      #     HELM_VERSION="v3.19.1"
+      #     ARCH="linux-amd64"
+      #     HELM_TAR="helm-${HELM_VERSION}-${ARCH}.tar.gz"
+          
+      #     # 2. Use the stable GitHub Releases direct download URL
+      #     DOWNLOAD_URL="https://github.com/helm/helm/releases/download/${HELM_VERSION}/${HELM_TAR}"
+          
+      #     echo "Downloading Helm ${HELM_VERSION} from ${DOWNLOAD_URL}"
+          
+      #     # 3. Download the binary package using curl
+      #     # -L follows redirects, -o specifies the output file, -f causes the operation to fail on HTTP errors (e.g., 404)
+      #     curl -fsSL -o "${HELM_TAR}" "${DOWNLOAD_URL}"
+          
+      #     # 4. Unpack the package
+      #     tar -zxvf "${HELM_TAR}"
+          
+      #     # 5. Move the binary to a directory that is on the runner's PATH
+      #     sudo mv "${ARCH}/helm" /usr/local/bin/helm
+          
+      #     # 6. Verify the installation
+      #     helm version --client
+
+      - name: ⬇️ Manual Helm Installation (Script with Specified Stable Version)
         run: |
-          # 1. Define the desired version (Latest stable)
-          HELM_VERSION="v3.19.1"
-          ARCH="linux-amd64"
-          HELM_TAR="helm-${HELM_VERSION}-${ARCH}.tar.gz"
+          # Define a known, stable version that is likely to be available.
+          # v3.19.0 is the major stable release before v3.19.1.
+          HELM_VERSION="v3.19.0"
           
-          # 2. Use the stable GitHub Releases direct download URL
-          DOWNLOAD_URL="https://github.com/helm/helm/releases/download/${HELM_VERSION}/${HELM_TAR}"
+          echo "Attempting to install Helm ${HELM_VERSION} using the official script."
           
-          echo "Downloading Helm ${HELM_VERSION} from ${DOWNLOAD_URL}"
+          # Download the installer script
+          curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
           
-          # 3. Download the binary package using curl
-          # -L follows redirects, -o specifies the output file, -f causes the operation to fail on HTTP errors (e.g., 404)
-          curl -fsSL -o "${HELM_TAR}" "${DOWNLOAD_URL}"
+          # Run the script with the --version flag to enforce a known stable release
+          chmod 700 get_helm.sh
+          ./get_helm.sh --version "${HELM_VERSION}"
           
-          # 4. Unpack the package
-          tar -zxvf "${HELM_TAR}"
-          
-          # 5. Move the binary to a directory that is on the runner's PATH
-          sudo mv "${ARCH}/helm" /usr/local/bin/helm
-          
-          # 6. Verify the installation
+          # Verify the installation
           helm version --client
