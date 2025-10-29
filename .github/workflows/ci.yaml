@@ -1,0 +1,29 @@
+name: Manual Helm Download
+
+# This section enables the manual "Run workflow" button in the GitHub UI
+on:
+  workflow_dispatch:
+    inputs:
+      helm_version:
+        description: 'Helm Version (e.g., v3.14.4 or latest)'
+        required: true
+        default: 'latest'
+
+jobs:
+  download_helm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Helm with Input Version
+        uses: azure/setup-helm@v1
+        with:
+          # Use the version provided in the manual trigger form, 
+          # otherwise fall back to the default 'latest'
+          version: ${{ github.event.inputs.helm_version }}
+
+      - name: ✅ Verify Helm Installation
+        run: |
+          echo "Successfully installed Helm version:"
+          helm version --short
